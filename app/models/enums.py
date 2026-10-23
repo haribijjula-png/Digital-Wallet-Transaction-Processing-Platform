@@ -1,0 +1,97 @@
+import enum
+
+
+class RoleName(str, enum.Enum):
+    SUPER_ADMIN = "SUPER_ADMIN"
+    ADMIN = "ADMIN"
+    SUPPORT_AGENT = "SUPPORT_AGENT"
+    CUSTOMER = "CUSTOMER"
+
+
+class WalletStatus(str, enum.Enum):
+    ACTIVE = "ACTIVE"
+    FROZEN = "FROZEN"
+    SUSPENDED = "SUSPENDED"
+    CLOSED = "CLOSED"
+
+
+class TxStatus(str, enum.Enum):
+    """Shared by deposits, withdrawals, transfers and the unified transactions table."""
+    PENDING = "PENDING"
+    PROCESSING = "PROCESSING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    CANCELLED = "CANCELLED"
+
+
+class RefundStatus(str, enum.Enum):
+    REQUESTED = "REQUESTED"
+    UNDER_REVIEW = "UNDER_REVIEW"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+
+
+class TransactionType(str, enum.Enum):
+    DEPOSIT = "DEPOSIT"
+    WITHDRAWAL = "WITHDRAWAL"
+    TRANSFER = "TRANSFER"
+    REFUND = "REFUND"
+    ADJUSTMENT = "ADJUSTMENT"
+
+
+class LedgerType(str, enum.Enum):
+    DEPOSIT = "DEPOSIT"
+    WITHDRAWAL = "WITHDRAWAL"
+    TRANSFER_DEBIT = "TRANSFER_DEBIT"
+    TRANSFER_CREDIT = "TRANSFER_CREDIT"
+    REFUND = "REFUND"
+    FEE = "FEE"
+    ADJUSTMENT = "ADJUSTMENT"
+    REVERSAL = "REVERSAL"
+
+
+class Direction(str, enum.Enum):
+    CREDIT = "CREDIT"
+    DEBIT = "DEBIT"
+
+
+class RiskStatus(str, enum.Enum):
+    NORMAL = "NORMAL"
+    REVIEW_REQUIRED = "REVIEW_REQUIRED"
+    BLOCKED = "BLOCKED"
+
+
+class ReviewStatus(str, enum.Enum):
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    CANCELLED = "CANCELLED"
+    NOT_REQUIRED = "NOT_REQUIRED"   # BLOCKED records: nothing to approve
+
+
+class IdempotencyState(str, enum.Enum):
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
+
+
+class NotificationType(str, enum.Enum):
+    DEPOSIT_COMPLETED = "DEPOSIT_COMPLETED"
+    DEPOSIT_FAILED = "DEPOSIT_FAILED"
+    TRANSFER_RECEIVED = "TRANSFER_RECEIVED"
+    TRANSFER_COMPLETED = "TRANSFER_COMPLETED"
+    TRANSFER_FAILED = "TRANSFER_FAILED"
+    WITHDRAWAL_COMPLETED = "WITHDRAWAL_COMPLETED"
+    WITHDRAWAL_FAILED = "WITHDRAWAL_FAILED"
+    WALLET_FROZEN = "WALLET_FROZEN"
+    WALLET_UNFROZEN = "WALLET_UNFROZEN"
+    REFUND_APPROVED = "REFUND_APPROVED"
+    REFUND_REJECTED = "REFUND_REJECTED"
+    SUSPICIOUS_TRANSACTION = "SUSPICIOUS_TRANSACTION"
+    DAILY_SUMMARY = "DAILY_SUMMARY"
+    TRANSACTION_UNDER_REVIEW = "TRANSACTION_UNDER_REVIEW"
+
+
+STAFF_ROLES = {RoleName.SUPER_ADMIN, RoleName.ADMIN, RoleName.SUPPORT_AGENT}
+ADMIN_ROLES = {RoleName.SUPER_ADMIN, RoleName.ADMIN}

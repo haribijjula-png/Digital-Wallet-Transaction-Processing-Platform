@@ -1,0 +1,67 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: wallet
+      POSTGRES_PASSWORD: wallet
+      POSTGRES_DB: wallet_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wallet -d wallet_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg2://wallet:wallet@db:5432/wallet_db
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production-please}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --- optional: Celery worker + beat (scheduled processing). `docker compose --profile celery up`
+  worker:
+    profiles: ["celery"]
+    build: .
+    entrypoint: []
+    command: celery -A app.celery_app worker -l info
+    environment:
+      DATABASE_URL: postgresql+psycopg2://wallet:wallet@db:5432/wallet_db
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production-please}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  beat:
+    profiles: ["celery"]
+    build: .
+    entrypoint: []
+    command: celery -A app.celery_app beat -l info
+    environment:
+      DATABASE_URL: postgresql+psycopg2://wallet:wallet@db:5432/wallet_db
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production-please}
+    depends_on:
+      - redis
+
+volumes:
+  pgdata:
